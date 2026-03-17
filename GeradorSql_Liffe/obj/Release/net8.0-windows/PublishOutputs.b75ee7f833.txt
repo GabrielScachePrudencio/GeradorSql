@@ -1,0 +1,5 @@
+C:\Users\Windows\source\repos\GeradorSql_Liffe\GeradorSql_Liffe\bin\Release\net8.0-windows\publish\GeradorSql_Liffe.exe
+C:\Users\Windows\source\repos\GeradorSql_Liffe\GeradorSql_Liffe\bin\Release\net8.0-windows\publish\GeradorSql_Liffe.dll
+C:\Users\Windows\source\repos\GeradorSql_Liffe\GeradorSql_Liffe\bin\Release\net8.0-windows\publish\GeradorSql_Liffe.deps.json
+C:\Users\Windows\source\repos\GeradorSql_Liffe\GeradorSql_Liffe\bin\Release\net8.0-windows\publish\GeradorSql_Liffe.runtimeconfig.json
+C:\Users\Windows\source\repos\GeradorSql_Liffe\GeradorSql_Liffe\bin\Release\net8.0-windows\publish\GeradorSql_Liffe.pdb
