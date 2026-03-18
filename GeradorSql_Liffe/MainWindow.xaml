@@ -212,12 +212,12 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Início" Foreground="#8b92b8" FontSize="11" Margin="0,0,0,4"/>
-                                    <DatePicker x:Name="dataInicio"/>
+                                    <DatePicker x:Name="dataInicio"  Foreground="Black"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Fim" Foreground="#8b92b8" FontSize="11" Margin="0,0,0,4"/>
-                                    <DatePicker x:Name="dataFim"/>
+                                    <DatePicker x:Name="dataFim" Foreground="Black" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -352,7 +352,15 @@
                         </StackPanel>
                     </Border>
                     <Border Background="#20243a" BorderBrush="#2e3250" BorderThickness="1"
-                            CornerRadius="12" Padding="16">
+                            CornerRadius="12" Padding="16" RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0.217"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Border.RenderTransform>
                         <StackPanel>
                             <TextBlock Text="ARQUIVOS"
                                        Foreground="#4a5078" FontSize="10" FontWeight="Bold"
@@ -367,6 +375,12 @@
                                         Background="#7c6af7"
                                         Style="{StaticResource UtilBtn}"
                                         Click="BtnSalvarSQL_Click"/>
+                                <Button x:Name="BtnGerarCheck" 
+                                    Content="Gerar SQL de Conferência" 
+                                    Click="BtnGerarCheck_Click"
+                                    Background="#6366f1" 
+                                    Foreground="White" 
+                                    Margin="0,5"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

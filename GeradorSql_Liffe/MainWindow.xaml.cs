@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 
 namespace GeradorSql_Liffe
 {
+    using GeradorSql_Liffe.Utils;
     using Microsoft.Win32;
     using System;
     using System.Collections.ObjectModel;
@@ -22,74 +23,7 @@ namespace GeradorSql_Liffe
     using System.Windows.Threading;
 
     namespace SQLGenerator
-    {
-        public class CsvRow
-        {
-            public string IdProcedimento { get; set; } = "";
-            public string Nome { get; set; } = "";
-            public string Tuss { get; set; } = "";
-            public string IdConvenio { get; set; } = "";
-            public string Convenio { get; set; } = "";
-            public string ValorAntigo { get; set; } = "";
-            public string ValorNovo { get; set; } = "";
-            public string DataCadastro { get; set; } = "";
-            public string Ativo { get; set; } = "";
-        }
-
-        public static class GeradorSQL
-        {
-            public static string GerarUpdateProducao(CsvRow r, DateTime? inicio, DateTime? fim)
-            {
-                string filtroData = "";
-                if (inicio.HasValue && fim.HasValue)
-                    filtroData = $" AND date(dataProcedimento) BETWEEN \"{inicio:yyyy-MM-dd}\" AND \"{fim:yyyy-MM-dd}\"";
-                else if (inicio.HasValue)
-                    filtroData = $" AND date(dataProcedimento) >= \"{inicio:yyyy-MM-dd}\"";
-                else if (fim.HasValue)
-                    filtroData = $" AND date(dataProcedimento) <= \"{fim:yyyy-MM-dd}\"";
-
-                return
-    $@"SELECT COUNT(*) 
-FROM producao
-WHERE idProcedimento = {r.IdProcedimento}
-AND idConvenio = {r.IdConvenio}
-AND valor = {r.ValorAntigo}{filtroData};
-
-UPDATE producao
-SET valor = {r.ValorNovo}
-WHERE idProcedimento = {r.IdProcedimento}
-AND idConvenio = {r.IdConvenio}
-AND valor = {r.ValorAntigo}{filtroData}
-and idProducao > 0;;
-
-";
-            }
-
-            public static string GerarInsertValor(CsvRow r) =>
-    $@"INSERT INTO procedimentovalorconvenio
-(idProcedimento, idConvenio, valor, dataCadastro, ativo)
-VALUES
-({r.IdProcedimento}, {r.IdConvenio}, {r.ValorNovo}, NOW(), 1);
-
-";
-
-            public static string GerarUpdateValor(CsvRow r) =>
-    $@"UPDATE procedimentovalorconvenio
-SET valor = {r.ValorNovo}
-WHERE idProcedimento = {r.IdProcedimento}
-AND idConvenio = {r.IdConvenio}
-AND valor = {r.ValorAntigo};
-
-";
-
-            public static string GerarInsertsProcedimentos(CsvRow r) =>
-    $@"INSERT INTO procedimento 
-(nome, tuss) 
-VALUES
-('{r.Nome}', '{r.Tuss}');
-
-";
-        }
+    {      
 
         public partial class MainWindow : Window
         {
@@ -192,12 +126,72 @@ VALUES
             private void BtnUpdateValor_Click(object sender, RoutedEventArgs e) => GerarSQL(3);
             private void BtnInsertProc_Click(object sender, RoutedEventArgs e) => GerarSQL(4);
 
+            private void BtnGerarCheck_Click(object sender, RoutedEventArgs e)
+            {
+                try
+                {
+                    if (dados.Count == 0)
+                    {
+                        MessageBox.Show("Carregue um CSV primeiro.", "Aviso",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Gera e abre o SELECT de conferência
+                    string sql = GeradorSQL.GerarSelectValidacao(dados, dataInicio.SelectedDate, dataFim.SelectedDate);
+                    string caminhoArquivo = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "check_banco.sql");
+                    System.IO.File.WriteAllText(caminhoArquivo, sql);
+                    System.Diagnostics.Process.Start(
+                        new System.Diagnostics.ProcessStartInfo(caminhoArquivo) { UseShellExecute = true });
+
+                    // Abre popup passando as datas
+                    var janela = new ResultadoBancoWindow(dados, dataInicio.SelectedDate, dataFim.SelectedDate)
+                    {
+                        Owner = this
+                    };
+
+                    // Quando o SQL for gerado, exibe os cards no painel principal
+                    janela.OnSQLGerado += (sqlGerado) =>
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            painelCards.Children.Clear();
+                            emptyLabel.Visibility = Visibility.Collapsed;
+
+                            // Divide o SQL em blocos por procedimento (separados por linha em branco dupla)
+                            var blocos = sqlGerado
+                                .Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.RemoveEmptyEntries)
+                                .Where(b => b.Trim().StartsWith("--") || b.Contains("UPDATE") || b.Contains("SELECT"))
+                                .ToList();
+
+                            int idx = 1;
+                            foreach (var bloco in blocos)
+                            {
+                                if (string.IsNullOrWhiteSpace(bloco)) continue;
+                                painelCards.Children.Add(CriarCardSQL($"UPDATE FINAL #{idx}", bloco.Trim(), "#22c55e"));
+                                idx++;
+                            }
+
+                            lblTotalCards.Text = $"{idx - 1} blocos";
+                            janela.Close();
+                        });
+                    };
+
+                    janela.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+
             private void GerarSQL(int tipo)
             {
                 DateTime? inicio = dataInicio.SelectedDate;
                 DateTime? fim = dataFim.SelectedDate;
 
-                string[] titulos = { "UPDATE PRODUCAO", "INSERT VALOR", "UPDATE VALOR", "INSERT PROCEDIMENTOS" };
+                string[] titulos = { "UPDATE PRODUCAO", "INSERT CONV VALOR PROC", "UPDATE CONV VALOR PROC", "INSERT PROCEDIMENTOS" };
                 string[] cores = { "#22c55e", "#3b82f6", "#f59e0b", "#a855f7" };
 
                 string titulo = titulos[tipo - 1];
@@ -235,6 +229,32 @@ VALUES
                 }
             }
 
+            /*
+            private void BtnProcessarResultado_Click(object sender, RoutedEventArgs e)
+            {
+                // Como o Clipboard está instável, você pode usar um TextBox chamado 'txtResultadoBanco' 
+                // ou pegar do Clipboard com o Helper que criamos
+                string textoDoBanco = txtResultadoBanco.Text;
+
+                if (string.IsNullOrWhiteSpace(textoDoBanco))
+                {
+                    MessageBox.Show("Cole o resultado do banco no campo de texto primeiro!");
+                    return;
+                }
+
+                string sqlFinal = GeradorSQL.GerarUpdatesFinais(textoDoBanco, dados);
+
+                // Salva direto no arquivo para evitar erro de cópia
+                string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "updates_finais.sql");
+                System.IO.File.WriteAllText(path, sqlFinal);
+
+                // Abre o arquivo pronto para você rodar no banco
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true });
+
+                MessageBox.Show($"Sucesso! {path} gerado com os comandos de update.");
+            }
+            */
+
             private void BtnSalvarSQL_Click(object sender, RoutedEventArgs e)
             {
                 var dlg = new SaveFileDialog { FileName = "script.sql", Filter = "SQL files|*.sql|All files|*.*" };
@@ -258,6 +278,26 @@ VALUES
                 {
                     MessageBox.Show(ex.Message, "Erro ao salvar", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+            private void CopiarParaClipboard(string texto)
+            {
+                // Tenta 5 vezes antes de desistir
+                for (int i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        Clipboard.SetText(texto);
+                        return; // Se funcionou, sai do método
+                    }
+                    catch (System.Runtime.InteropServices.COMException)
+                    {
+                        // Se falhou, espera 50ms e tenta de novo
+                        System.Threading.Thread.Sleep(50);
+                    }
+                }
+
+                // Se chegar aqui, realmente deu erro após 5 tentativas
+                MessageBox.Show("Não foi possível acessar a Área de Transferência. Tente novamente.");
             }
 
             private Border CriarCardSQL(string titulo, string sql, string corHex)
@@ -284,7 +324,8 @@ VALUES
                 };
                 btnCopiar.Click += (_, _) =>
                 {
-                    Clipboard.SetText(sql);
+                    CopiarParaClipboard(sql); // Chama o método robusto aqui
+
                     btnCopiar.Content = "Copiado!";
                     var t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
                     t.Tick += (_, _) => { btnCopiar.Content = "Copiar"; t.Stop(); };

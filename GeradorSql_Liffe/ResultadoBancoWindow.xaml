@@ -1,0 +1,205 @@
+﻿<Window x:Class="GeradorSql_Liffe.SQLGenerator.ResultadoBancoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Processar Resultado do Banco"
+        Width="860" Height="620"
+        MinWidth="600" MinHeight="400"
+        Background="#0f1117"
+        FontFamily="Segoe UI"
+        WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="Transparent">
+                            <Track Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#2e3250" CornerRadius="3"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="24" Background="#0f1117">
+        <DockPanel LastChildFill="True">
+
+            <!-- HEADER -->
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                <TextBlock Text="Resultado do Banco"
+                           Foreground="#e8eaf6" FontSize="20" FontWeight="Bold"
+                           FontFamily="Consolas, Courier New"/>
+                <TextBlock Text="Importe o CSV exportado do HeidiSQL / Workbench para gerar os UPDATEs"
+                           Foreground="#4a5078" FontSize="12" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <Border DockPanel.Dock="Top" Height="1" Background="#2e3250" Margin="0,0,0,16"/>
+
+            <!-- BOTÕES DE AÇÃO (rodapé) -->
+            <Grid DockPanel.Dock="Bottom" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status -->
+                <TextBlock x:Name="lblStatus"
+                           Grid.Column="0"
+                           Text="Aguardando arquivo CSV..."
+                           Foreground="#4a5078" FontSize="12"
+                           VerticalAlignment="Center"/>
+
+                <!-- Importar CSV -->
+                <Button x:Name="btnImportarCSV"
+                        Grid.Column="2"
+                        Content="📂  Importar CSV do Banco"
+                        Foreground="#e8eaf6"
+                        FontSize="13" FontWeight="Bold"
+                        Padding="20,10"
+                        Cursor="Hand"
+                        Click="BtnImportarCSV_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="brd"
+                                    Background="#374151" BorderBrush="#4b5563"
+                                    BorderThickness="1" CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="brd" Property="Background" Value="#4b5563"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Gerar UPDATEs -->
+                <Button x:Name="btnGerarUpdates"
+        Grid.Column="4"
+        Content="⚡  Gerar UPDATEs"
+        Foreground="#22c55e"
+        FontSize="13" FontWeight="Bold"
+        Padding="20,10"
+        Cursor="Hand"
+        IsEnabled="False"
+        Click="BtnGerarUpdates_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="brd"
+                    Background="#1a2e1a" BorderBrush="#22c55e"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="brd" Property="Background" Value="#22c55e22"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="brd" Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <!-- CORPO: preview da tabela importada -->
+            <Border Background="#20243a" BorderBrush="#2e3250" BorderThickness="1"
+                    CornerRadius="12" ClipToBounds="True">
+                <DockPanel LastChildFill="True">
+
+                    <!-- Cabeçalho da área -->
+                    <Border DockPanel.Dock="Top"
+                            Background="#1a1d27" Padding="14,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="PRÉ-VISUALIZAÇÃO DO CSV IMPORTADO"
+                                       Foreground="#4a5078" FontSize="10" FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblLinhas"
+                                       Grid.Column="1"
+                                       Text="0 linhas"
+                                       Foreground="#4a5078" FontSize="11"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- DataGrid de preview -->
+                    <DataGrid x:Name="gridPreview"
+                              Background="#20243a"
+                              Foreground="#e8eaf6"
+                              BorderThickness="0"
+                              GridLinesVisibility="None"
+                              RowBackground="#20243a"
+                              AlternatingRowBackground="#1a1d27"
+                              HeadersVisibility="Column"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              AutoGenerateColumns="True"
+                              SelectionMode="Single"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background"      Value="#1a1d27"/>
+                                <Setter Property="Foreground"      Value="#8b92b8"/>
+                                <Setter Property="FontSize"        Value="12"/>
+                                <Setter Property="Padding"         Value="10,6"/>
+                                <Setter Property="BorderBrush"     Value="#2e3250"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground"      Value="#e8eaf6"/>
+                                <Setter Property="FontSize"        Value="12"/>
+                                <Setter Property="Padding"         Value="10,4"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background"      Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#2a2f4a"/>
+                                        <Setter Property="Foreground" Value="#e8eaf6"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#2a2f4a"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+        </DockPanel>
+    </Border>
+</Window>
