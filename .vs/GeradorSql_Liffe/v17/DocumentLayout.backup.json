@@ -50,8 +50,7 @@
               "RelativeToolTip": "GeradorSql_Liffe\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-03-17T11:46:22.392Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -67,8 +66,7 @@
               "RelativeToolTip": "GeradorSql_Liffe\\ResultadoBancoWindow.xaml.cs",
               "ViewState": "AgIAAHUAAAAAAAAAAAAqwLMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:57:22.146Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T03:57:22.146Z"
             },
             {
               "$type": "Document",
@@ -79,8 +77,7 @@
               "ToolTip": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\ResultadoBancoWindow.xaml",
               "RelativeToolTip": "GeradorSql_Liffe\\ResultadoBancoWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-03-18T03:55:02.536Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T03:55:02.536Z"
             },
             {
               "$type": "Document",
@@ -92,8 +89,7 @@
               "RelativeToolTip": "GeradorSql_Liffe\\ClipboardHelper.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:42:16.447Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T03:42:16.447Z"
             },
             {
               "$type": "Document",
@@ -103,7 +99,7 @@
               "RelativeDocumentMoniker": "GeradorSql_Liffe\\GeradorSQL.cs",
               "ToolTip": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\GeradorSQL.cs",
               "RelativeToolTip": "GeradorSql_Liffe\\GeradorSQL.cs",
-              "ViewState": "AgIAAIIAAAAAAAAAAAAAAJsAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAAAJsAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-18T03:30:13.485Z",
               "EditorCaption": ""
@@ -118,8 +114,7 @@
               "RelativeToolTip": "GeradorSql_Liffe\\CsvRow.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:29:28.825Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T03:29:28.825Z"
             },
             {
               "$type": "Document",
@@ -131,8 +126,7 @@
               "RelativeToolTip": "GeradorSql_Liffe\\MainWindow.xaml.cs",
               "ViewState": "AgIAAH4AAAAAAAAAAADgv5kAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T11:46:19.083Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-17T11:46:19.083Z"
             }
           ]
         },

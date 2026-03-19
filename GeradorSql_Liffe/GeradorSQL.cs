@@ -135,9 +135,14 @@ VALUES
                     continue;
                 }
 
-                var match = dadosCsv.FirstOrDefault(x =>
-                    x.IdProcedimento.Trim() == idProc.Trim() &&
-                    x.IdConvenio.Trim() == idConv.Trim());
+                var dadosSemDuplicados = dadosCsv
+                .GroupBy(x => new { x.IdProcedimento, x.IdConvenio })
+                .Select(g => g.First())
+                .ToList();
+
+                var match = dadosSemDuplicados.FirstOrDefault(x =>
+    x.IdProcedimento.Trim() == idProc.Trim() &&
+    x.IdConvenio.Trim() == idConv.Trim());
 
                 if (match == null) { naoEncontrados++; continue; }
 
