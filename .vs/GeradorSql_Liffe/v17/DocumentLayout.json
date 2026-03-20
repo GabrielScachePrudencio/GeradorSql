@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|c:\\users\\flavio\\desktop\\linguagens\\projetos\\geradorsqlliffetrue\\geradorsql_liffe\\geradorsql_liffe\\geradorsql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|solutionrelative:geradorsql_liffe\\geradorsql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|c:\\users\\flavio\\desktop\\linguagens\\projetos\\geradorsqlliffetrue\\geradorsql_liffe\\geradorsql_liffe\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|solutionrelative:geradorsql_liffe\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|c:\\users\\flavio\\desktop\\linguagens\\projetos\\geradorsqlliffetrue\\geradorsql_liffe\\geradorsql_liffe\\geradorsql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|solutionrelative:geradorsql_liffe\\geradorsql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96AB5412-DFA1-4E8F-95D7-31696C66E446}|GeradorSql_Liffe\\GeradorSql_Liffe.csproj|c:\\users\\flavio\\desktop\\linguagens\\projetos\\geradorsqlliffetrue\\geradorsql_liffe\\geradorsql_liffe\\resultadobancowindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 1551,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
@@ -93,16 +93,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "GeradorSQL.cs",
               "DocumentMoniker": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\GeradorSQL.cs",
               "RelativeDocumentMoniker": "GeradorSql_Liffe\\GeradorSQL.cs",
               "ToolTip": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\GeradorSQL.cs",
               "RelativeToolTip": "GeradorSql_Liffe\\GeradorSQL.cs",
-              "ViewState": "AgIAAIIAAAAAAAAAAAAAAJsAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAcwGIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:30:13.485Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T03:30:13.485Z"
             },
             {
               "$type": "Document",
@@ -118,15 +117,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "GeradorSql_Liffe\\MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\Flavio\\Desktop\\Linguagens\\PROJETOS\\GeradorSqlLiffeTrue\\GeradorSql_Liffe\\GeradorSql_Liffe\\MainWindow.xaml.cs",
               "RelativeToolTip": "GeradorSql_Liffe\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAH4AAAAAAAAAAADgv5kAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAACYAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T11:46:19.083Z"
+              "WhenOpened": "2026-03-17T11:46:19.083Z",
+              "EditorCaption": ""
             }
           ]
         },

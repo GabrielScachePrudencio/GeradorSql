@@ -35,6 +35,13 @@ namespace GeradorSql_Liffe
                 tabela.ItemsSource = dados;
             }
 
+            // ============================================================
+            //  SUBSTITUIÇÃO DO MÉTODO BtnAbrirCSV_Click em MainWindow.cs
+            //  Detecta separador automaticamente (vírgula, ponto e vírgula,
+            //  tab, pipe) e mapeia colunas pelo NOME do cabeçalho,
+            //  sem depender da ordem das colunas no arquivo.
+            // ============================================================
+
             private void BtnAbrirCSV_Click(object sender, RoutedEventArgs e)
             {
                 var dlg = new OpenFileDialog { Filter = "CSV files|*.csv|All files|*.*" };
@@ -44,81 +51,153 @@ namespace GeradorSql_Liffe
 
                 try
                 {
-                    using var reader = new StreamReader(dlg.FileName);
+                    using var reader = new StreamReader(dlg.FileName, detectEncodingFromByteOrderMarks: true);
 
-                    string header = reader.ReadLine();
-                    MessageBox.Show($"HEADER:\n{header}");
-
-                    int numeroLinha = 1;
-
-                    while (!reader.EndOfStream)
+                    // ── 1. Lê a linha de cabeçalho ──────────────────────────────────────
+                    string? headerLine = reader.ReadLine();
+                    if (string.IsNullOrWhiteSpace(headerLine))
                     {
-                        var linha = reader.ReadLine();
-                        numeroLinha++;
+                        MessageBox.Show("O arquivo está vazio ou não tem cabeçalho.", "Aviso",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
+                    // ── 2. Detecta o separador automaticamente ──────────────────────────
+                    char sep = DetectarSeparador(headerLine);
+
+                    // ── 3. Mapeia o nome da coluna → índice (case-insensitive + trim) ───
+                    var cabecalhos = SplitLinha(headerLine, sep);
+                    var idx = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                    for (int i = 0; i < cabecalhos.Length; i++)
+                        idx[cabecalhos[i].Trim().Trim('"')] = i;
+
+                    // Nomes aceitos por coluna (adicione aliases conforme o seu CSV)
+                    int Col(params string[] aliases)
+                    {
+                        foreach (var a in aliases)
+                            if (idx.TryGetValue(a, out int i)) return i;
+                        return -1; // coluna não encontrada
+                    }
+
+                    int iIdProc = Col("idProcedimento", "id_procedimento", "idProc", "id");
+                    int iNome = Col("Nome", "NomeProcedimento", "Procedimento", "descricao");
+                    int iTuss = Col("Tuss", "CodigoTuss", "cod_tuss", "tuss");
+                    int iIdConv = Col("IdConvenio", "id_convenio", "idConv");
+                    int iConv = Col("Convenio", "NomeConvenio", "convenio");
+                    int iValorAntigo = Col("ValorAntigo", "valor_antigo", "v_antigo", "ValorAnterior");
+                    int iValorNovo = Col("ValorNovo", "valor_novo", "v_novo", "NovoValor");
+                    int iData = Col("DataCadastro", "data_cadastro", "Data", "DataVigencia");
+                    int iAtivo = Col("Ativo", "ativo", "Status", "status");
+
+                    // ── 4. Lê as linhas de dados ────────────────────────────────────────
+                    string? linha;
+                    int numeroLinha = 1;
+                    int erros = 0;
+
+                    while ((linha = reader.ReadLine()) != null)
+                    {
+                        numeroLinha++;
                         if (string.IsNullOrWhiteSpace(linha)) continue;
 
-                        // Mostra linha crua
-                        //MessageBox.Show($"📄 LINHA {numeroLinha}:\n{linha}");
+                        var c = SplitLinha(linha, sep);
 
-                        // SPLIT UNIVERSAL (resolve 99% dos CSV zoado)
-                        var c = linha.Split(new char[] { ',', ';', '\t' });
-
-                        // Remove espaços extras
+                        // Limpa aspas e espaços de cada célula
                         for (int i = 0; i < c.Length; i++)
-                            c[i] = c[i].Trim();
+                            c[i] = c[i].Trim().Trim('"').Trim();
 
-                        //MessageBox.Show($"🔢 COLUNAS: {c.Length}");
-
-                        // Mostra conteúdo de cada coluna
-                        string detalhe = "";
-                        for (int i = 0; i < c.Length; i++)
-                            detalhe += $"c[{i}] = '{c[i]}'\n";
-
-                        //MessageBox.Show($"📊 DETALHES:\n{detalhe}");
-
-                        if (c.Length < 8)
-                        {
-                           // MessageBox.Show($"❌ LINHA {numeroLinha} IGNORADA (menos de 8 colunas)");
-                            continue;
-                        }
+                        string Get(int colIdx) =>
+                            colIdx >= 0 && colIdx < c.Length ? c[colIdx] : "";
 
                         try
                         {
-                            var row = new CsvRow
+                            dados.Add(new CsvRow
                             {
-                                IdProcedimento = c[0],
-                                Nome = c[1],
-                                Tuss = c[2],
-                                IdConvenio = c[3],
-                                Convenio = c[4],
-                                ValorAntigo = c.Length > 8 ? c[8] : "",
-                                ValorNovo = c[5],
-                                DataCadastro = c[6],
-                                Ativo = c[7]
-                            };
-
-                            dados.Add(row);
-
-                            //MessageBox.Show(
-                                //$"✅ LINHA {numeroLinha} OK\n\n" +
-                                //$"IdProcedimento: {row.IdProcedimento}\n" +
-                                //$"ValorAntigo: {row.ValorAntigo}\n" +
-                               // $"ValorNovo: {row.ValorNovo}"
-                            //);
+                                IdProcedimento = Get(iIdProc),
+                                Nome = Get(iNome),
+                                Tuss = Get(iTuss),
+                                IdConvenio = Get(iIdConv),
+                                Convenio = Get(iConv),
+                                ValorAntigo = Get(iValorAntigo),
+                                ValorNovo = Get(iValorNovo),
+                                DataCadastro = Get(iData),
+                                Ativo = Get(iAtivo)
+                            });
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            MessageBox.Show($"💥 ERRO NA LINHA {numeroLinha}:\n{ex.Message}");
+                            erros++;
                         }
                     }
 
-                    MessageBox.Show("🚀 IMPORTAÇÃO FINALIZADA");
+                    string msg = $"🚀 IMPORTAÇÃO FINALIZADA COM SUCESSO!\n\n" +
+                                 $"• Separador detectado : '{sep}'\n" +
+                                 $"• Linhas importadas   : {dados.Count}\n" +
+                                 (erros > 0 ? $"• Linhas com erro     : {erros}" : "");
+
+                    MessageBox.Show(msg, "Importação concluída",
+                                    MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Erro ao abrir CSV", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ex.Message, "Erro ao abrir CSV",
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+
+            // ================================================================
+            //  MÉTODOS AUXILIARES — adicione-os também dentro de MainWindow
+            // ================================================================
+
+            /// <summary>
+            /// Detecta o separador mais provável pela contagem na linha de cabeçalho.
+            /// Suporta: ';'  ','  '\t'  '|'
+            /// </summary>
+            private static char DetectarSeparador(string linha)
+            {
+                char[] candidatos = { ';', ',', '\t', '|' };
+                return candidatos.OrderByDescending(s => linha.Count(c => c == s)).First();
+            }
+
+            /// <summary>
+            /// Divide uma linha CSV respeitando campos entre aspas duplas.
+            /// Funciona com qualquer separador.
+            /// </summary>
+            private static string[] SplitLinha(string linha, char sep)
+            {
+                var campos = new List<string>();
+                bool dentroAspas = false;
+                var atual = new System.Text.StringBuilder();
+
+                for (int i = 0; i < linha.Length; i++)
+                {
+                    char c = linha[i];
+
+                    if (c == '"')
+                    {
+                        // Aspas duplas escapadas ("") dentro de um campo
+                        if (dentroAspas && i + 1 < linha.Length && linha[i + 1] == '"')
+                        {
+                            atual.Append('"');
+                            i++; // pula o segundo "
+                        }
+                        else
+                        {
+                            dentroAspas = !dentroAspas;
+                        }
+                    }
+                    else if (c == sep && !dentroAspas)
+                    {
+                        campos.Add(atual.ToString());
+                        atual.Clear();
+                    }
+                    else
+                    {
+                        atual.Append(c);
+                    }
+                }
+
+                campos.Add(atual.ToString()); // último campo
+                return campos.ToArray();
             }
 
             private void BtnUpdateProducao_Click(object sender, RoutedEventArgs e) => GerarSQL(1);

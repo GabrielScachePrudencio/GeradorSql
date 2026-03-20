@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GeradorSql_Liffe")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+951e253469d934155141771e0eee33e385013945")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9963d8cea6dbb80fa9453bfe495e437f78a5d00c")]
 [assembly: System.Reflection.AssemblyProductAttribute("GeradorSql_Liffe")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GeradorSql_Liffe")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
