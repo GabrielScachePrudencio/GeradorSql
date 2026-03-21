@@ -43,9 +43,9 @@ AND idProducao > 0;
 
         public static string GerarInsertValor(CsvRow r) =>
 $@"INSERT INTO procedimentovalorconvenio
-(idProcedimento, idConvenio, valor, dataCadastro, ativo)
+(idProcedimento, idConvenio, valor, dataCadastro, ativo, idPessoaCadastro)
 VALUES
-({r.IdProcedimento}, {r.IdConvenio}, {r.ValorNovo}, NOW(), 1);
+({r.IdProcedimento}, {r.IdConvenio}, {r.ValorNovo}, NOW(), 1, 1);
 
 ";
 
